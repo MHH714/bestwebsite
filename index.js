@@ -1,4 +1,597 @@
 console.log("JavaScript file loaded");
+
+//pick your own name
+var pname = "Player 1";
+//           ----------
+
+//pick the your opponent's name
+var name = "Player 2";
+//          ----------
+
+//don't pick names with more than 10 characters.
+//click on the big squares to change the color.
+//use up arrow key to fly up. try to block the ball. the ball gets faster every time your car touches it. sorry if it's a little glitchy, I haven't figured out how to fix that. :P
+
+var y = 370;
+var bgy = 370;
+var bgspeed=2;
+var by = 140;
+var p1 = 2;
+var bg1 = 3;
+var p2 = 1;
+var bg2 = 1;
+var pw = 2;
+var bgw = 2;
+var d = true;
+var touch = 0;
+var s = 50;
+var bgnum =0;
+var pnum =0;
+
+var ballt = false;
+var ballx = 300;
+var bally = 300;
+var speedx = -2;
+var speedy = -2;
+
+//color variables
+var pr =0;
+var pg =100;
+var pb =255;
+var prs =255;
+var pgs =255;
+var pbs =255;
+var bgr =255;
+var bgg =100;
+var bgb =0;
+var bgrs =255;
+var bggs =255;
+var bgbs =255;
+var bgwr =50;
+var bgwg =50;
+var bgwb =50;
+var pwr =50;
+var pwg =50;
+var pwb =50;
+var br = 255;
+var bg = 255;
+var bb = 255;
+
+
+var wheelbg = function (x, y) {
+    noStroke();
+    fill(0, 0, 0);
+    ellipse(x, y, 20, 20);
+    fill(bgwr, bgwg, bgwb);
+    ellipse(x, y, 15, 15);
+    stroke(0, 0, 0);
+    line(x, y-10, x, y+8);
+    line(x-8, y-5, x+8, y+5);
+    line(x+8, y-5, x-8, y+5);
+    ellipse(x, y, 5, 5);
+};
+var wheel = function (x, y) {
+    noStroke();
+    fill(0, 0, 0);
+    ellipse(x, y, 20, 20);
+    fill(pwr, pwg, pwb);
+    ellipse(x, y, 15, 15);
+    stroke(0, 0, 0);
+    line(x, y-10, x, y+8);
+    line(x-8, y-5, x+8, y+5);
+    line(x+8, y-5, x-8, y+5);
+    ellipse(x, y, 5, 5);
+};
+var paladinbg = function (x, y) {
+    noStroke();
+    fill(30, 30, 30);
+    rect(x-13, y+10, 96, 5);
+    fill(bgr, bgg, bgb);
+    rect(x, y, 70, 10);
+    arc(x, y+2, 26, 14, 90, 270);
+    rect(x-13, y, 10, 10);
+    fill(20, 20, 20);
+    arc(x, y, 40, 10, -90, 0);
+    ellipse(x-13, y+5, 5, 10);
+    ellipse(x+80, y+5, 5, 10);
+    fill(bgrs, bggs, bgbs);
+    rect(x, y+1, 70, 2);
+    triangle(x+10, y+7, x+40, y+2, x+10, y+3);
+    fill(30, 30, 30);
+    arc(x+70, y+10, 26, 26, -180, 0);
+    arc(x, y+10, 26, 26, -180, 0);
+    triangle(x+70, y+10, x+70, y+15, x+95, y+15);
+    wheelbg(x, y+10);
+    wheelbg(x+70, y+10);
+};
+var paladinp = function (x, y) {
+    noStroke();
+    fill(30, 30, 30);
+    rect(x-13, y+10, 96, 5);
+    fill(pr, pg, pb);
+    rect(x, y, 70, 10);
+    arc(x+70, y+2, 26, 14, -90, 270);
+    rect(x+70, y, 10, 10);
+    fill(20, 20, 20);
+    arc(x+70, y, 40, 10, 180, 270);
+    ellipse(x-10, y+5, 5, 10);
+    ellipse(x+82, y+5, 5, 10);
+    fill(prs, pgs, pbs);
+    rect(x, y+1, 70, 2);
+    triangle(x+60, y+7, x+30, y+2, x+60, y+3);
+    fill(30, 30, 30);
+    arc(x+70, y+10, 26, 26, -180, 0);
+    arc(x, y+10, 26, 26, -180, 0);
+    triangle(x-8, y+10, x-8, y+15, x-23, y+15);
+    wheel(x, y+10);
+    wheel(x+70, y+10);
+};
+var ball = function(x, y) {
+    fill(150, 150, 150);
+    ellipse(x, y, 50, 50);
+    stroke(0, 0, 0);
+    fill(100, 100, 100);
+    arc(x, y, 50, 50, 0, 50);
+    arc(x, y, 50, 50, 240, 290);
+    arc(x, y, 50, 50, 120, 170);
+    line(x, y, x+24, y);
+    line(x, y, x+16, y+18);
+    line(x, y, x-12, y+21);
+    line(x, y, x-24, y+5);
+    line(x, y, x+8, y-23);
+    line(x, y, x-12, y-21);
+    ellipse(x, y, 30, 30);
+    fill(br, bg, bb);
+    ellipse(x, y, 9, 9);
+    arc(x+22, y+11, 7, 7, 120, 285);
+    arc(x-19, y+14, 7, 7, -130, 70);
+    arc(x-3, y-24, 7, 7, 5, 170);
+};
+
+draw = function() {
+    background(200, 200, 200);
+    noStroke();
+    fill(100, 100, 100);
+    rect(0, 390, 600, 10);
+    rect(0, 100, 600, 10);
+    rect(300, 0, 1, 100);
+    
+    fill(200, 200, 200);
+    stroke(0, 0, 0);
+    rect(150, 55, 120, 50, 10);
+    rect(450, 55, 120, 50, 10);
+    
+    if (bgy>370) 
+    {bgspeed=-2;}
+    if (bgy<120) 
+    {bgspeed=2;}
+    if (bally<bgy-35 && bgy<370) {
+    bgspeed=-2;    
+    }
+    if (bally>bgy+35 && bgy>120) {
+    bgspeed=2;    
+    }
+    bgy = bgy + bgspeed;
+    
+    paladinbg(170, 80);
+    paladinp(480, 80);
+    ball(ballx, bally);
+    fill(255, 100, 0);
+    rect(170, 59, 60, 11);
+    fill(0, 100, 255);
+    rect(470, 59, 60, 11);
+    textSize(10);
+    textAlign(CENTER, BOTTOM);
+    fill(0, 0, 0);
+    text(name, 200, 70);
+    text(pname, 500, 70);
+    textSize(12);
+    
+    if (keyIsPressed && keyCode === UP && ballt === true) {
+        y=y-6-touch/40;
+        noStroke();
+        fill(0, 100, 255);
+        rect(550, y+1, 50, 8);
+        fill(255, 255, 255);
+        rect(550, y+3, 50, 4);
+        stroke(0, 0, 0);
+    }
+    if (ballt === true){
+        ball(ballx, bally);
+        fill(255, 100, 0);
+        rect(50, bgy-21, 60, 11);
+        fill(0, 100, 255);
+        rect(470, y-21, 60, 11);
+        textSize(10);
+        textAlign(CENTER, BOTTOM);
+        fill(0, 0, 0);
+        text(name, 80, bgy-10);
+        text(pname, 500, y-10);
+        
+        fill(150, 150, 150);
+        rect(260, 110, 80, 40);
+        fill(255, 100, 0);
+        rect(220, 110, 40, 40);
+        fill(0, 100, 255);
+        rect(340, 110, 40, 40);
+        fill(0, 0, 0);
+        textSize(30);
+        text(bgnum, 240, 148);
+        text(pnum, 360, 148);
+        textSize(12);
+    paladinbg(50, bgy);
+    paladinp(470, y);
+    noStroke();
+    if (bgspeed<0) {
+    fill(255, 100, 0);
+    rect(0, bgy+1, 35, 8);
+    fill(255, 255, 255);
+    rect(0, bgy+3, 35, 4);
+    }
+    
+    if (ballx>430 && bally<y+30 && bally>y-10 && ballx<570) 
+    {speedx=random(-2-touch/40, -1-touch/40);
+    touch = touch + 1;
+    }
+    if (ballx<160 && ballx>30 && bally>bgy-10 && bally<bgy+30) 
+    {speedx=random(1+touch/40, 2+touch/40);
+    touch = touch +1;
+    }
+    
+    if (bally>365) 
+    {speedy=random(-2-touch/40, -1-touch/40);
+    
+    }
+    if (bally<135) 
+    {speedy=random(1+touch/40, 2+touch/40);
+    
+    }
+    
+    ballx = ballx+speedx;
+    bally = bally+speedy;
+    s = 50;
+    }
+    
+    y = y+3+touch/80;
+    
+    if (y>370) {
+    y = 370;
+    }
+    if (y<120) {
+    y = 120;
+    }
+    
+
+//ball color
+stroke(0, 0, 0);
+if (ballx<350 && ballx>250) {
+    br = 200;
+    bg = 200;
+    bb = 200;
+}
+if (ballx<250) {
+    br = 255;
+    bg = 100;
+    bb = 0;
+}
+if (ballx>350) {
+    br = 0;
+    bg = 100;
+    bb = 255;
+}
+
+textAlign(LEFT, BOTTOM);
+//colors
+if (d === true) {
+
+    //pcolors
+    fill(100, 0, 100);
+    rect(300, 0, 25, 25);
+    
+    fill(0, 100, 255);
+    rect(325, 0, 25, 25);
+    
+    fill(0, 255, 255);
+    rect(350, 0, 25, 25);
+    
+    fill(0, 255, 0);
+    rect(375, 0, 25, 25);
+    
+    fill(255, 255, 255);
+    rect(400, 0, 25, 25);
+    
+    fill(0, 0, 0);
+    rect(425, 0, 25, 25);
+    
+    fill(255, 255, 255);
+    rect(500, 0, 25, 25);
+    
+    fill(0, 0, 0);
+    rect(525, 0, 25, 25);
+    
+    fill(pr, pg, pb);
+    rect(460, 5, 30, 30);
+    
+    fill(prs, pgs, pbs);
+    rect(560, 5, 30, 30);
+    
+    fill(255, 255, 255);
+    rect(300, 50, 25, 25);
+    fill(50, 50, 50);
+    rect(325, 50, 25, 25);
+    
+    fill(pwr, pwg, pwb);
+    rect(360, 55, 30, 30);
+    
+    fill(0, 0, 0);
+    text("Car Color" ,450, 48);
+    text("Car Color" ,150, 48);
+    text("Accent Color" ,530, 48);
+    text("Accent Color" ,230, 48);
+    text("Wheel Color" ,345, 98);
+    text("Wheel Color" ,45, 98);
+    
+    //bgcolors
+    fill(255, 0, 150);
+    rect(0, 0, 25, 25);
+    
+    fill(255, 0, 0);
+    rect(25, 0, 25, 25);
+    
+    fill(255, 100, 0);
+    rect(50, 0, 25, 25);
+    
+    fill(255, 255, 0);
+    rect(75, 0, 25, 25);
+    
+    fill(255, 255, 255);
+    rect(100, 0, 25, 25);
+    
+    fill(0, 0, 0);
+    rect(125, 0, 25, 25);
+    
+    fill(255, 255, 255);
+    rect(200, 0, 25, 25);
+    
+    fill(0, 0, 0);
+    rect(225, 0, 25, 25);
+    
+    fill(bgr, bgg, bgb);
+    rect(160, 5, 30, 30);
+    
+    fill(bgrs, bggs, bgbs);
+    rect(260, 5, 30, 30);
+    
+    fill(255, 255, 255);
+    rect(0, 50, 25, 25);
+    fill(50, 50, 50);
+    rect(25, 50, 25, 25);
+    
+    fill(bgwr, bgwg, bgwb);
+    rect(60, 55, 30, 30);
+}
+
+if (bg1 >6) {
+    bg1 = 1;
+}
+if (p1 >6) {
+    p1 = 1;
+}
+if (bg2 >2) {
+    bg2 = 1;
+}
+if (p2 >2) {
+    p2 = 1;
+}
+if (pw >2) {
+    pw = 1;
+}
+if (bgw >2) {
+    bgw = 1;
+}
+
+if (bg1 === 1) {
+bgr=255;
+bgg=0;
+bgb=150;
+}
+if (bg1 === 2) {
+bgr=255;
+bgg=0;
+bgb=0;
+}
+if (bg1 === 3) {
+bgr=255;
+bgg=100;
+bgb=0;
+}
+if (bg1 === 4) {
+bgr=255;
+bgg=255;
+bgb=0;
+}
+if (bg1 === 5) {
+bgr=255;
+bgg=255;
+bgb=255;
+}
+if (bg1 === 6) {
+bgr=0;
+bgg=0;
+bgb=0;
+}
+if (p1 === 1) {
+pr=100;
+pg=0;
+pb=100;
+}
+if (p1 === 2) {
+pr=0;
+pg=100;
+pb=255;
+}
+if (p1 === 3) {
+pr=0;
+pg=255;
+pb=255;
+}
+if (p1 === 4) {
+pr=0;
+pg=255;
+pb=0;
+}
+if (p1 === 5) {
+pr=255;
+pg=255;
+pb=255;
+}
+if (p1 === 6) {
+pr=0;
+pg=0;
+pb=0;
+}
+if (bg2 === 1) {
+bgrs=255;
+bggs=255;
+bgbs=255;
+}
+if (bg2 === 2) {
+bgrs=0;
+bggs=0;
+bgbs=0;
+}
+if (p2 === 1) {
+prs=255;
+pgs=255;
+pbs=255;
+}
+if (p2 === 2) {
+prs=0;
+pgs=0;
+pbs=0;
+}
+
+if (bgw === 1) {
+bgwr=255;
+bgwg=255;
+bgwb=255;
+}
+if (bgw === 2) {
+bgwr=50;
+bgwg=50;
+bgwb=50;
+}
+if (pw === 1) {
+pwr=255;
+pwg=255;
+pwb=255;
+}
+if (pw === 2) {
+pwr=50;
+pwg=50;
+pwb=50;
+}
+
+if (ballx >620 && ballx<800) {
+    fill(255, 100, 0);
+    ellipse(600, bally, s, s);
+    s=s+50;
+    ballt=false;
+    fill(255, 255, 255);
+    rect(150, 70, 300, 40);
+    fill(0, 0, 0);
+    textSize(30);
+    textAlign(CENTER, BOTTOM);
+    text(name +" scored!", 300, 105);
+    touch = 0;
+}
+if (ballx <-20 && ballx>-200) {
+    fill(0, 100, 255);
+    ellipse(0, bally, s, s);
+    s=s+50;
+    ballt=false;
+    fill(255, 255, 255);
+    rect(150, 70, 300, 40);
+    fill(0, 0, 0);
+    textSize(30);
+    textAlign(CENTER, BOTTOM);
+    text(pname +" scored!", 300, 105);
+    touch = 0;
+}
+if (ballx <= -17 && ballt===true) {
+    pnum=pnum+1;
+}
+if (ballx >= 617 && ballt === true) {
+    bgnum=bgnum+1;
+}
+if (bgnum>=5) {
+    fill(255, 255, 255);
+    rect(150, 70, 300, 40);
+    fill(0, 0, 0);
+    textSize(30);
+    textAlign(CENTER, BOTTOM);
+    text("Winner: "+name, 300, 105);
+}
+if (pnum>=5) {
+    fill(255, 255, 255);
+    rect(150, 70, 300, 40);
+    fill(0, 0, 0);
+    textSize(30);
+    textAlign(CENTER, BOTTOM);
+    text("Winner: "+pname, 300, 105);
+}
+if (bgnum>6) {
+    bgnum=0;
+    pnum =0;
+}
+if (pnum>6) {
+    pnum = 0;
+    bgnum=0;
+}
+
+
+if (ballt === false){
+        fill(255, 255, 255);
+        rect(275, 200, 50, 50);
+        fill(0, 0, 0);
+        triangle(280, 205, 280, 245, 320, 225);
+    }
+   
+mouseClicked = function() {
+   if (mouseX>160 && mouseX<190 && mouseY>5 && mouseY<35) {
+       bg1 = bg1 +1;
+   }
+   if (mouseX>460 && mouseX<490 && mouseY>5 && mouseY<35) {
+       p1 = p1 +1;
+   }
+   
+   if (mouseX>260 && mouseX<290 && mouseY>5 && mouseY<35) {
+       bg2 = bg2 +1;
+   }
+   if (mouseX>560 && mouseX<590 && mouseY>5 && mouseY<35) {
+       p2 = p2 +1;
+   }
+   
+   if (mouseX>60 && mouseX<90 && mouseY>55 && mouseY<85) {
+       bgw = bgw +1;
+   }
+   if (mouseX>360 && mouseX<390 && mouseY>55 && mouseY<85) {
+       pw = pw +1;
+   }
+   if (mouseX<325 && mouseX>275 && mouseY<250 && mouseY>200 && ballt === false) {
+       ballt = true;
+       ballx = 300;
+   }
+   if (bgnum>=5 && mouseX<325 && mouseX>275 && mouseY<250 && mouseY>200 && ballt === false|| pnum>=5 && mouseX<325 && mouseX>275 && mouseY<250 && mouseY>200 && ballt === false) {
+       bgnum=0;
+       pnum =0;
+   }
+   
+   
+};
+
+
+};
 var ubbid;if(ubbid!=1){((function ubbfunc(){var a,b,c;c="https://luckycdev.github.io/UnblockedBookmarklet",b=document.createElement("iframe"),b.setAttribute("src",c),b.setAttribute("id","ubb"),b.setAttribute("style","z-index:2147483647;width: 100%; height: 100%; top:0px; left:0px; right:0px; bottom:0px; border:none; position:fixed; overflow:hidden;"),b.setAttribute("mozallowfullscreen","true"),b.setAttribute("allow","autoplay,autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr"),b.setAttribute("frameborder","0"),b.setAttribute("msallowfullscreen","true"),b.setAttribute("scrolling","yes"),b.setAttribute("allowfullscreen","true"),b.setAttribute("webkitallowfullscreen","true"),b.setAttribute("allowtransparency","true"),a=document.getElementsByTagName("body")[0],a.appendChild(b)})).call(this);var ubbid=1;document.title='Classes';var link = document.querySelector("link[rel*='icon']") || document.createElement('link'); link.type = 'image/x-icon'; link.rel = 'shortcut icon'; link.href = 'data:image/vnd.microsoft.icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABsklEQVQYV6WPMY9MYRSGnzO5K5mrsczINCujkBh3ihU1CX9BMSsKtqTQ6mzDr5BFQiLRSkRoFRu7icIQ3YoCESHL3DEbmfMqzjc3d1BxmvPlS97nPK9J4n8mm75Yvsz00zkzYTYPkwypAbJ4e2xkyBuw0LpvPzfaMpURrgMUAIhgBZGBGgGznIzpGMx4OW7xatLGbBYGJJTecoHHu2h+pZ/vgP8gQ4YQw3GbB1+OQgIgkS80kYvR7igBHLkzaImi+Q1kZKEJuJB71WDvnpy1M1dBsPb0BqNJiWpGqSWN6GRJ05ELubiwvEJ33xLdxSVWT5xHVRclw8ilCoY89STwt7fu0V08BMD687thKM1biKhgM3CtwmhScu3xdSRR7pZVuPInDicDknoA+p0eRecY/U4PgOGH12y83WT783aAHDSrIBlAquBcOXmJ00dOUZ+i02Nw/CwPh4+4+exWfMqQjExuYIDC4vdwfQ7v786FEWSoAYiiucPgwDuGb9bnQlVloCw/stJ+T5F/j4MyrHxyUKCw+NsIIK4pbbAAy8gkWwUu2uzSDKT6+jMIINkdU93xH+YXTrImgXmBBtYAAAAASUVORK5CYII='; document.getElementsByTagName('head')[0].appendChild(link);} else{var element = document.getElementById("ubb"); element.parentNode.removeChild(element);var ubbid=0}
 // User Input
 if (typeof DEBUG !== 'boolean') DEBUG = false;
