@@ -12,7 +12,11 @@
       </div>
       <script>
         function cloak() {
-          var win = window.open(); // Open new blank tab/window
+          var urlObj = new window.URL(window.location.href);
+          var cleanUrl = urlObj.origin + urlObj.pathname; // Keep base URL and path
+
+          // Open new blank window
+          var win = window.open();
           win.document.body.style.margin = "0";
           win.document.body.style.height = "100vh";
 
@@ -24,11 +28,13 @@
           iframe.referrerPolicy = "no-referrer";
           iframe.allow = "fullscreen";
 
-          iframe.src = "https://bestwebsite-six.vercel.app/index.html"; // Load index.html
+          iframe.src = cleanUrl; // Set iframe to correct URL
           win.document.body.appendChild(iframe);
 
-          window.location.href = "index.html"; // Redirect current page
+          window.location.href = "index.html"; // Redirect original page
         }
+
+        cloak(); // Auto-execute cloak on page load
       </script>
       <script src="/js/index.js"></script>
     </body>
